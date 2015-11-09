@@ -1,6 +1,6 @@
 # About Dropzone
 Dropzone JS is an open source library that provides drag’n’drop file uploads with image previews.
-source: http://www.dropzonejs.com/
+http://www.dropzonejs.com/
 
 # DropZoneExtender 
 This project wraps Dropzone configuration to be more easy and quick creation of user-upload interface.
