@@ -4,7 +4,12 @@
  * @param options
  * @param dropZoneAdditional
  */
+
 var dzex = function (dropZoneForm, options, dropZoneAdditional) {
+
+    if (typeof window.jQuery == 'undefined') {
+        console.error('jQuery is required for DropZoneExtender! ');
+    }
 
     var defaults = {
         paramName: 'FileUpload',
@@ -51,6 +56,35 @@ var dzex = function (dropZoneForm, options, dropZoneAdditional) {
         $coverImagesPreviewer.fadeOut(300, function () {
             $coverImagesPreviewer.attr('src', $view + image).fadeIn(300);
         });
+    }
+
+
+
+    /**
+     * Reads file and returns information
+     * @param file Path to file
+     * @returns {{width: string, height: string, type: string, name: string, size: string, format: string}}
+     */
+    function getImnageData(file) {
+
+        var reader = new FileReader(), image = new Image(), data = {width: '', height: '', type: '', name: '', size: '', format: ''};
+
+        reader.readAsDataURL(file);
+        reader.onload = function (_file) {
+            image.src = _file.target.result;    // url.createObjectURL(file);
+            image.onload = function () {
+                data.width = this.width;
+                data.height = this.height;
+                data.type = file.type;          // ext only: // file.type.split('/')[1],
+                data.name = file.name;
+                data.size = ~~(file.size / 1024) + 'KB';
+                data.format = (this.width >= this.height) ? 'landscapes' : 'portrait';
+            };
+            image.onerror = function () {
+                console.error('Invalid file type: ' + file.type);
+            };
+        };
+        return data;
     }
 
     /**
@@ -164,7 +198,6 @@ var dzex = function (dropZoneForm, options, dropZoneAdditional) {
             },
             init: function (file) {
                 var _t = this;
-
                 //
                 // Add uploaded files / Path to upload with ID:Item
                 $.get($(dropZoneForm).data('upload'), function (data) {
@@ -173,7 +206,6 @@ var dzex = function (dropZoneForm, options, dropZoneAdditional) {
                         // Button adding
                         file.previewElement.appendChild(btnPreview(file));
                         file.previewElement.appendChild(btnRemove(file, _t));
-
                     });
                 });
                 //
@@ -207,8 +239,6 @@ var dzex = function (dropZoneForm, options, dropZoneAdditional) {
 
 
 }, dropZone;
-
-
 
 
 
